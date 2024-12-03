@@ -12,7 +12,7 @@
     mvn clean package
 
 ### Выбор режима:
-    java -jar target/util-1.0-SNAPSHOT-jar-with-dependencies.jar [additional parameters] 
+    java -jar target/util-1.0-SNAPSHOT-jar-with-dependencies.jar mode(s) [additional parameters] 
 
 ## Доступные режимы:
 - s (Short statistics);
