@@ -14,6 +14,15 @@ public class FilterService {
     private final List<String> floats = new ArrayList<>();
     private final List<String> strings = new ArrayList<>();
 
+    private long sumIntegers = 0;
+    private float sumFloats = 0F;
+    private float minFloat = Float.MAX_VALUE;
+    private float maxFloat = Float.MIN_VALUE;
+    private long minInteger = Integer.MAX_VALUE;
+    private long maxInteger = Integer.MIN_VALUE;
+    private long minStringLength = Long.MAX_VALUE;
+    private long maxStringLength = Long.MIN_VALUE;
+
     public FilterService(ArgumentsParser arguments) {
         this.arguments = arguments;
     }
@@ -36,11 +45,21 @@ public class FilterService {
 
     private void classifyLine(String line) {
         if (line.matches("-?\\d+")) {
+            long value = Long.parseLong(line);
             integers.add(line);
+            sumIntegers += value;
+            minInteger = Math.min(minInteger, value);
+            maxInteger = Math.max(maxInteger, value);
         } else if (line.matches("-?\\d+\\.\\d+([eE][-+]?\\d+)?")) {
             floats.add(line);
+            float value = Float.parseFloat(line);
+            sumFloats += value;
+            minFloat = Math.min(minFloat, value);
+            maxFloat = Math.max(maxFloat, value);
         } else if (!line.isEmpty()) {
             strings.add(line);
+            minStringLength = Math.min(minStringLength, line.length());
+            maxStringLength = Math.max(maxStringLength, line.length());
         }
     }
 
@@ -61,8 +80,40 @@ public class FilterService {
     }
 
     private void printStats() {
-        System.out.println("Целые числа: " + integers.size());
-        System.out.println("Вещественные числа: " + floats.size());
-        System.out.println("Строки: " + strings.size());
+        boolean isShortStat = arguments.isShortStats();
+        boolean isFullStat = arguments.isFullStats();
+
+        if (isShortStat) {
+            System.out.println("Целые числа: " + integers.size());
+            System.out.println("Вещественные числа: " + floats.size());
+            System.out.println("Строки: " + strings.size());
+        }
+
+        if (isFullStat) {
+            if (!integers.isEmpty()) {
+                System.out.println("Целые числа:");
+                System.out.println("  Количество: " + integers.size());
+                System.out.println("  Минимум: " + minInteger);
+                System.out.println("  Максимум: " + maxInteger);
+                System.out.println("  Сумма: " + sumIntegers);
+                System.out.println("  Среднее: " + (sumIntegers / (double) integers.size()));
+            }
+
+            if (!floats.isEmpty()) {
+                System.out.println("Вещественные числа:");
+                System.out.println("  Количество: " + floats.size());
+                System.out.println("  Минимум: " + minFloat);
+                System.out.println("  Максимум: " + maxFloat);
+                System.out.println("  Сумма: " + sumFloats);
+                System.out.println("  Среднее: " + (sumFloats / floats.size()));
+            }
+
+            if (!strings.isEmpty()) {
+                System.out.println("Строки:");
+                System.out.println("  Количество: " + strings.size());
+                System.out.println("  Минимальная длина: " + minStringLength);
+                System.out.println("  Максимальная длина: " + maxStringLength);
+            }
+        }
     }
 }
