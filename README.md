@@ -1,7 +1,7 @@
 # SHIFT-TestTask
 
 * Java: 21
-* Build: Maven (Version 3.9.8)
+* Build tool: Maven (Version 3.9.8)
 * Other libraries:
   - Lombok (Version 1.18.36)
   - Apache Commons CLI (Version 1.9.0)
